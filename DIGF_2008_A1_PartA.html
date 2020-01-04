@@ -1,0 +1,216 @@
+<!-- DIGF_2008_A1 -->
+<!-- SULIM LEE 3177733-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Assignment 1 - Vue JS</title>
+
+    <!-- Required Stylesheets -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+
+    <!-- Required scripts -->
+    <!--script src="https://unpkg.com/vue"></script-->
+
+    <!--Vue.js link-->
+    <!-- <script type = "text/javascript" src = "js/vue.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js">
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <style>
+    #input{
+      margin-right: 30px;
+      margin-left: 30px;
+    }
+    h2{
+      text-align: center;
+    }
+    #title {
+      font-family: arial, sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 40px;
+      margin-top: 15px;
+      margin-bottom: 50px;
+      margin-right: 50px;
+      margin-left: 50px;
+    }
+
+    #input{
+      text-align: center;
+    }
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+  </style>
+
+  <body>
+
+    <h1 id="title">Vue JS Income and Expenses</h1>
+    <!-- Our application root element which contains all bootstrap-Vue elements -->
+
+
+    <div id="app">
+
+      <div class="row">
+        <div class="col-sm-6">
+
+          <!-- Adding Expenses (5pts): -->
+          <div id="input" class="form-group form-group-lg">
+          <!-- Two input text fields for entering the Expense name and cost -->
+          <h4> ITEM <input class="form-control" v-model="txtItem"></input></h4>
+          <h4> COST <input class="form-control" v-model="txtCost"></input></h4>
+          <!-- A button to add a new expense.
+          When the button is clicked the expense is shown in a table format.
+          The rows of the table must be rendered to the view.
+          Add multiple expenses to test this. -->
+          <p><button class="btn btn-primary" @click="addExpense">Add New Expense</button></p>
+          </div>
+
+          <h2>Expenses List</h2>
+          <div>
+            <table class="table">
+                <thead>
+                    <th>Item</th>
+                    <th>Cost</th>
+                    <!-- <th>Select</th> -->
+                </thead>
+                <tbody>
+                    <!--tr v-for="item in inventory"-->
+                    <tr v-for="item in expenses">
+                        <td>{{item.desc}}</td>
+                        <td>{{item.cost}}</td>
+                        <!-- <td><button v-on:click="addToCart(index)">Add to Cart</button></td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+      </div>
+
+      <div class="col-sm-6">
+
+        <!-- Adding Income (3pts): -->
+        <div id="input" class="form-group form-group-lg">
+        <!-- Create form elements for entering Income (i.e., income source, and amount)
+        and display this in a table format. -->
+        <h4> SOURCE <input class="form-control"  v-model="txtIncomeSource"></input></h4>
+        <h4> AMOUNT <input class="form-control"  v-model="txtIncomeAmount"></input></h4>
+        <p><button class="btn btn-primary" @click="addIncome">Add New Income</button></p>
+        </div>
+
+        <h2>Income List</h2>
+           <div>
+            <table class="table">
+                <thead>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <!-- <th>Select</th> -->
+                </thead>
+                <tbody>
+                    <tr v-for="income in incomes">
+                        <td>{{income.incomeSource}}</td>
+                        <td>{{income.incomeAmount}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Calculate the Net Income (i.e., total income - total expenses).
+            Display the net income in a message. -->
+
+
+          </div>
+      </div>
+    </div>
+
+    <!-- A running total of your current expenses is shown in a message:
+    “You are currently spending this amount!” -->
+    <div> <h2>You are currently spending this amount! $ {{total}}</h2></div>
+
+    <!-- If the total expenses are low display a "low priority message" (i.e., <$100);
+    if the total expenses are medium (i.e., between $100-500) display a medium formatted priority message;
+    if the total expenses are high (above 500) display a strongly formatted warning message.
+    This should use the v-if directive. -->
+    <div v-if="total < 100"> <h2>Please spend more..</h2></div>
+    <div v-if="total >= 100 && total <500"> <h2>You are doing fine!</h2></div>
+    <div v-if="total >=500"> <h2>You are spending a lot!</h2></div>
+
+    <div> <h2>Your Total Income is $ {{totalIncome}}  Your Net Income is $ {{netIncome}}</h2></div>
+    <!-- If Net-income is a profit display a message for formatted for a profit,
+    and if it is a loss display a loss message. -->
+    <div v-if="netIncome < 0"> <h2>You are spending too much!</h2></div>
+    <!-- <div v-if="netIncome = 0"> <h2>You haven't earn any</h2></div> -->
+    <div v-if="netIncome > 0"> <h2>You are doing fine</h2></div>
+  </div>
+
+
+
+    <!-- Start running your app -->
+    <script>
+      // Create the appropriate variables and methods
+      // in a single Vue instance to support this application
+      //window.app = new Vue({
+      var app = new Vue({
+        el: '#app',
+        data: {
+          //Variables go here. key : value pairs. Comma separated
+          expenses: [],
+          incomes: [],
+          txtItem:"",
+          txtCost:"",
+          txtIncomeSource:"",
+          txtIncomeAmount:"",
+          totalIncome: 0,
+          netIncome:0,
+          total: 0
+        },
+        methods: {
+
+          //Methods go here. Comma separated
+          addExpense: function(){
+            var newItem = {desc: this.txtItem, cost: Number(this.txtCost)} //make a new item
+            this.expenses.push(newItem);   //append this new item to the inventory list
+            this.total += newItem.cost;
+            this.netIncome = this.totalIncome - this.total;
+
+          },
+
+          addIncome: function(){
+            var newIncome = {incomeSource: this.txtIncomeSource, incomeAmount: Number(this.txtIncomeAmount)} //make a new item
+            this.incomes.push(newIncome);   //append this new item to the inventory list
+            this.totalIncome += newIncome.incomeAmount;
+            this.netIncome = this.totalIncome - this.total;
+
+          }
+
+
+        }
+
+      })
+
+    </script>
+
+
+  </body>
+</html>

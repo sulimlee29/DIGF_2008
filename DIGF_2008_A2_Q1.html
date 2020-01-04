@@ -1,0 +1,220 @@
+<!-- DIGF_2008_A2 -->
+<!-- SULIM LEE 3177733-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Bootstrap Vue Assignment 2</title>
+
+    <!-- Required Stylesheets -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+
+    <!-- Required scripts -->
+    <!--script src="https://unpkg.com/vue"></script-->
+
+    <!--Vue.js link-->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+
+  <style>
+
+  </style>
+
+  <body>
+
+    <h1>Bootstrap Vue A2</h1>
+
+    <div id="app">
+
+
+        <div>
+        <!-- - (2pts) - Use Bootstrap-Vue Tab containers for each view of the application:
+        Tab 1 should be for Revenue, Tab2 should be for Expenses,
+        Tab 3 Should be for Message Printouts -->
+        <b-card no-body>
+          <b-tabs card>
+            <b-tab title="Revenue" active>
+              <b-card-text>Revenue</b-card-text>
+              <template>
+                <b-container fluid>
+                    <!-- - (2pts) - Use Bootstrap-Vue Input fields and Bootstrap-Vue Buttons to add content to each ledger.  -->
+                    <b-col sm="3">
+                      <label type ="text"> Income Source </label>
+                      <b-form-input id="text" type="text" v-model="txtIncomeSource"></b-form-input>
+                      <label type = "text"> Income Amount </label>
+                      <b-form-input id="text" type="text" v-model="txtIncomeAmount"></b-form-input>
+                    </b-col>
+                    <b-col sm="3"></br>
+                      <!-- - (2pts) - Use Bootstrap-Vue Tables to display revenue information and expense information in each tab. -->
+                      <button class="btn btn-primary" @click="addIncome">Add New Income</button>
+                      <!-- - (2pts) -
+                      Use Bootstrap-Vue Modal show dialog windows for
+                      each conditional message before writing the message
+                      to the "Messages tab" . I.e., if spending is high,
+                      the modal show window should display a prompt containing the message. -->
+                      <b-modal v-model="modalShow4">Your Net income is minus, You are spending too much!</b-modal>
+                      <b-modal v-model="modalShow5">Your Net income is fine, You are doing fine</b-modal>
+                    </b-col>
+
+                    </br>
+                    <!-- - (2pts) - Use Bootstrap-Vue Tables to display revenue information and expense information in each tab. -->
+                    <template>
+                      <div>
+                        <b-table striped hover :items="incomes" :fields="incomefields"></b-table>
+                      </div>
+                    </template>
+                </b-container>
+              </template>
+            </b-tab>
+
+            <b-tab title="Expenses">
+              <b-card-text>Expenses</b-card-text>
+              <template>
+                <b-container fluid>
+                <!-- - (2pts) - Use Bootstrap-Vue Input fields and Bootstrap-Vue Buttons to add content to each ledger.  -->
+                    <b-col sm="3">
+                      <label type ="text"> Item </label>
+                      <b-form-input id="text" type="text" v-model="txtItem"></b-form-input>
+                      <label type = "text"> Cost </label>
+                      <b-form-input id="text" type="text" v-model="txtCost"></b-form-input>
+                    </b-col>
+                    <b-col sm="3"></br>
+                      <button class="btn btn-primary" @click="addExpense">Add New Expense</button>
+                    </b-col>
+                    </br>
+                      <!-- - (2pts) - Use Bootstrap-Vue Tables to display revenue information and expense information in each tab. -->
+                    <template>
+                      <div>
+                        <!-- - (2pts) - Use Bootstrap-Vue Tables to display revenue information and expense information in each tab. -->
+                        <b-table striped hover :items="expenses" :fields="expensefields"></b-table>
+
+                        <!-- - (2pts) -
+                        Use Bootstrap-Vue Modal show dialog windows for
+                        each conditional message before writing the message
+                        to the "Messages tab" . I.e., if spending is high,
+                        the modal show window should display a prompt containing the message. -->
+                        <b-modal v-model="modalShow1">Please spend more!!</b-modal>
+                        <b-modal v-model="modalShow2">You are doing fine!</b-modal>
+                        <b-modal v-model="modalShow3">You are spending a lot!</b-modal>
+                      </div>
+                    </template>
+
+                </b-container>
+              </template>
+            </b-tab>
+            <b-tab title="Message">
+              <b-card-text></b-card-text>
+              <div>
+                <!-- - (2pts) -
+                Use Bootstrap-Vue Cards on the third Tab (for messages) and in each one display
+                the appropriate message output (using conditional rendering) -->
+                <b-card title="Message" body-class="text-center" header-tag="nav">
+                  <div><b-card-text>You are currently spending this amount! $ {{total}}</b-card-text></div>
+
+
+                  <div v-if="total < 100"><b-card-text>Please spend more!!</b-card-text></div>
+                  <div v-if="total >= 100 && total <500"><b-card-text>You are doing fine!</b-card-text></div>
+                  <div v-if="total >=500"><b-card-text>You are spending a lot!</b-card-text></div>
+
+                  <div><b-card-text>Your Total Income is $ {{totalIncome}}, Your Net Income is $ {{netIncome}}</b-card-text></div>
+
+                  <div v-if="netIncome < 0"><b-card-text>Your Net income is minus, You are spending too much!</b-card-text></div>
+
+                  <div v-if="netIncome > 0"><b-card-text>Your Net income is fine, You are doing fine</b-card-text></div>
+                </b-card>
+            </div>
+            </b-tab>
+          </b-tabs>
+        </b-card>
+      </div>
+    </div>
+
+    <!-- Start running your app -->
+
+
+    <script>
+
+      var app = new Vue({
+        el: '#app',
+        data: {
+          //Revenue
+          txtIncomeSource:"",
+          txtIncomeAmount:"",
+          incomefields: ['Source', 'Amount'],
+          incomes: [],
+
+          //Expense
+          txtItem: '',
+          txtCost: '',
+          expensefields: ['Item', 'Cost'],
+          expenses: [],
+
+          //message
+          totalIncome: 0,
+          netIncome:0,
+          total: 0,
+
+          //txtMessage
+          modalShow1: false,
+          modalShow2: false,
+          modalShow3: false,
+
+          modalShow4: false,
+          modalShow5: false
+
+
+
+
+        },
+        methods: {
+          //Methods go here. Comma separated
+          addExpense: function(){
+            var newItem = {Item: this.txtItem, Cost: Number(this.txtCost)} //make a new item
+            //console.log();
+            this.expenses.push(newItem);   //append this new item to the inventory list
+            this.total += newItem.Cost;
+            this.netIncome = this.totalIncome - this.total;
+
+            if(this.total < 100){
+              this.modalShow1 = !this.modalShow1;
+            }else if(this.total >= 100 && this.total <500){
+              this.modalShow2 = !this.modalShow2;
+            }else if(this.total >=500){
+              this.modalShow3 = !this.modalShow3;
+            }
+
+          },
+
+          addIncome: function(){
+            var newIncome = {Source: this.txtIncomeSource, Amount: Number(this.txtIncomeAmount)} //make a new item
+            this.incomes.push(newIncome);   //append this new item to the inventory list
+            this.totalIncome += newIncome.Amount;
+            this.netIncome = this.totalIncome - this.total;
+
+            if(this.netIncome < 0){
+              this.modalShow4 = !this.modalShow4;
+            }else if(this.netIncome > 0){
+              this.modalShow5 = !this.modalShow5;
+            }
+
+          }
+
+        }
+
+      })
+
+    </script>
+
+
+  </body>
+</html>
